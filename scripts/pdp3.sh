@@ -1970,6 +1970,7 @@ PrepareTables() { # purpose: prepare PRIDE-PPPAR needed tables in working direct
     local leapsec_ftp="0"
     local leapsec_exi="0"
     local leapsec_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/table/$leapsec"
+	local leapsec_url_bds="ftps://bdspride.com/table/$leapsec"
     if [ -f "$leapsec" ]; then
         sed -n "1p;q" "$leapsec" | grep -q "*" || leapsec_ftp="1"
         grep -q "\-leap sec" "$leapsec"        || leapsec_ftp="1"
@@ -1978,7 +1979,7 @@ PrepareTables() { # purpose: prepare PRIDE-PPPAR needed tables in working direct
     fi
     if [ "$leapsec_ftp" != 0 -o "$leapsec_exi" != 0 ]; then
         rm -f "$leapsec"
-        WgetDownload "$leapsec_url"
+        WgetDownload "$leapsec_url_bds" || WgetDownload "$leapsec_url"
         if [ ! -f "$leapsec" ]; then
             cp -f "$table_dir/$leapsec" .
         else
@@ -2001,6 +2002,7 @@ PrepareTables() { # purpose: prepare PRIDE-PPPAR needed tables in working direct
     local satpara_ftp="0"
     local satpara_exi="0"
     local satpara_url="ftp://igs.gnsswhu.cn/pub/whu/phasebias/table/$satpara"
+	local satpara_url_bds="ftps://bdspride.com/table/$satpara"
     if [ -f "$satpara" ]; then
         local tmpymd=($(sed -n "1p;q" "$satpara" | awk '{print(substr($0,56,4),substr($0,61,2),substr($0,64,2))}'))
         local tmpmjd=$(ymd2mjd ${tmpymd[@]})
@@ -2011,7 +2013,7 @@ PrepareTables() { # purpose: prepare PRIDE-PPPAR needed tables in working direct
     fi
     if [ "$satpara_ftp" != 0 -o "$satpara_exi" != 0 ]; then
         rm -f "$satpara"
-        WgetDownload "$satpara_url"
+        WgetDownload "$satpara_url_bds" || WgetDownload "$satpara_url"
         if [ ! -f "$satpara" ]; then
             cp -f "$table_dir/$satpara" .
         else
